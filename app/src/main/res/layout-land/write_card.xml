@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ru.rambler.libs.swipe_layout.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/product_swipe_root"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:layout_marginStart="@dimen/margin_start"
+    android:layout_marginLeft="@dimen/margin_start"
+    android:layout_marginTop="@dimen/margin_top"
+    android:layout_marginEnd="@dimen/margin_end"
+    android:layout_marginRight="@dimen/margin_end"
+    android:layout_marginBottom="@dimen/margin_bottom">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        app:cardElevation="@dimen/card_elevation">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/vector_card_background"
+        tools:ignore="UselessParent">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="0dp"
+            android:fontFamily="@font/werdant"
+            android:gravity="center"
+            android:lines="1"
+            tools:text="Смородина"
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        app:cardElevation="@dimen/card_elevation"
+        app:gravity="right"
+        app:bring_to_clamp="150dp"
+        app:clamp="self"
+        app:sticky="100dp"
+        tools:ignore="MissingPrefix">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/color_swipe_background"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/delete_product"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="25dp"
+                android:layout_gravity="start"
+                app:srcCompat="@drawable/vector_delete_white"
+                android:layout_marginStart="25dp"
+                tools:ignore="VectorDrawableCompat" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_gravity="start"
+                android:text="@string/delete_text"
+                android:textSize="12sp"
+                android:layout_marginStart="16dp"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</ru.rambler.libs.swipe_layout.SwipeLayout>
