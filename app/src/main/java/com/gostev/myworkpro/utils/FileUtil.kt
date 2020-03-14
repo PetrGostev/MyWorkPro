@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.gostev.myworkpro.utils
 
 import android.content.Context
@@ -23,7 +25,7 @@ class FileUtil {
 	}
 
 	fun createDir(name: String): File? {
-		val myFile = File(DIRECTORY_NAME)
+		myFile = File(DIRECTORY_NAME)
 		val baseDir: File = Environment.getExternalStorageDirectory()
 		val folder = File(baseDir, name)
 		if (folder.exists()) {

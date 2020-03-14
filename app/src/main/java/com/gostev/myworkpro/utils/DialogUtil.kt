@@ -41,7 +41,7 @@ class DialogUtil {
 	fun showInfoDialog(getActivity: Activity?, title: String?) {
 		val builder = Builder(getActivity)
 		builder.setTitle(title).setCancelable(false)
-			.setNegativeButton("ОК") { dialog, id -> dialog.cancel() }
+			.setPositiveButton("ОК") { dialog, _ -> dialog.cancel() }
 		val dialog = builder.create()
 		dialog.show()
 	}
