@@ -176,6 +176,7 @@ open class WriteFragment : Fragment() {
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		val id = item.itemId
 		if (id == R.id.save_fragment) {
+			hideKeyboard()
 			if (mTitle.text.isEmpty()) {
 				dialogUtil.showInfoDialog(activity, getString(R.string.title_required))
 			} else {
@@ -189,7 +190,6 @@ open class WriteFragment : Fragment() {
 					}
 
 					if (mTitle.text.split(" ") != fileUtil.getTitleWrite().split(" ")) {
-						hideKeyboard()
 						dialogUtil.showEditFileDialog(writesActivity,
 							object : DialogUtil.EditCallback {
 								override fun done(ok: Boolean) {

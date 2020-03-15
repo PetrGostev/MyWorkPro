@@ -4,7 +4,7 @@ class WriteModel {
     private lateinit var mTitle:String
 
     fun setTitle(name: String) {
-        val stringParse: List<String> = name.split(".")
+        val stringParse: List<String> = name.split(".txt")
         mTitle = stringParse[0]
     }
 
