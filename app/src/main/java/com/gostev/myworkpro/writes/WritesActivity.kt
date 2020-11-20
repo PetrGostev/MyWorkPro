@@ -9,11 +9,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.gostev.myworkpro.R
 import com.gostev.myworkpro.adapters.WritesAdapter
 import com.gostev.myworkpro.info.InfoActivity
@@ -23,6 +21,8 @@ import com.gostev.myworkpro.utils.FileUtil
 import com.gostev.myworkpro.utils.ModeType
 import com.gostev.myworkpro.utils.PermissionsUtil
 import com.gostev.myworkpro.write.WriteFragment
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 
 class WritesActivity : MvpAppCompatActivity(), WritesActivityMvpView, WritesAdapter.OnViewClickListener {
 
@@ -30,12 +30,7 @@ class WritesActivity : MvpAppCompatActivity(), WritesActivityMvpView, WritesAdap
 		private const val NAME_FILE = "NAME_FILE"
 	}
 
-	private lateinit var mRecyclerView: RecyclerView
-	private lateinit var mWelcomeText: TextView
-	private lateinit var mFab: FloatingActionButton
-
 	private lateinit var mAdapter: WritesAdapter
-	private var writeFragment: WriteFragment? = null
 
 	private var mDialogUtil: DialogUtil =
 		DialogUtil()
@@ -62,12 +57,7 @@ class WritesActivity : MvpAppCompatActivity(), WritesActivityMvpView, WritesAdap
 		setSupportActionBar(toolbar)
 		supportActionBar!!.setDisplayShowTitleEnabled(false)
 
-		val title: TextView = findViewById(R.id.title_view)
-		title.text = getString(R.string.app_name)
-
-		mRecyclerView = findViewById(R.id.recycler)
-		mWelcomeText = findViewById(R.id.welcome_text)
-		mFab = findViewById(R.id.fab)
+		title_view.text = getString(R.string.app_name)
 
 		mFileUtil = mPresenter.getFileUtil()
 
@@ -98,13 +88,13 @@ class WritesActivity : MvpAppCompatActivity(), WritesActivityMvpView, WritesAdap
 					override fun done(ok: Boolean) {
 						if (ok) {
 							mPresenter.setWriteFragment(null)
-							mFab.visibility = View.VISIBLE
+							fab.visibility = View.VISIBLE
 							this@WritesActivity.onBackPressed()
 						}
 					}
 				})
 		} else {
-			mFab.visibility = View.VISIBLE
+			fab.visibility = View.VISIBLE
 			super.onBackPressed()
 		}
 		setupViews()
@@ -112,7 +102,7 @@ class WritesActivity : MvpAppCompatActivity(), WritesActivityMvpView, WritesAdap
 
 	private fun setupViews() {
 		mPresenter.obtainData()
-		mFab.setOnClickListener {
+		fab.setOnClickListener {
 			mPresenter.setModeType(ModeType.CREATE)
 			mPresenter.setVisibleSaveItem(false)
 			presentWriteFragment("")
@@ -120,17 +110,17 @@ class WritesActivity : MvpAppCompatActivity(), WritesActivityMvpView, WritesAdap
 	}
 
 	private fun visibleWelcomeText(visible: Boolean) {
-		if (visible) mWelcomeText.visibility = View.VISIBLE
-		else mWelcomeText.visibility = View.GONE
+		if (visible) welcome_text.visibility = View.VISIBLE
+		else welcome_text.visibility = View.GONE
 	}
 
 	override fun showWrites(result: ArrayList<WriteModel>) {
 		visibleWelcomeText(result.isEmpty())
 		mAdapter = WritesAdapter(result, this)
 
-		mRecyclerView.layoutManager = LinearLayoutManager(applicationContext)
-		mRecyclerView.itemAnimator = DefaultItemAnimator()
-		mRecyclerView.adapter = mAdapter
+		writes_recycler.layoutManager = LinearLayoutManager(applicationContext)
+		writes_recycler.itemAnimator = DefaultItemAnimator()
+		writes_recycler.adapter = mAdapter
 	}
 
 	override fun onClickWrite(view: View, writeModel: WriteModel) {
@@ -172,15 +162,15 @@ class WritesActivity : MvpAppCompatActivity(), WritesActivityMvpView, WritesAdap
 	private fun presentWriteFragment(title: String) {
 		val fragmentManager: FragmentManager = supportFragmentManager
 		val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-		writeFragment = WriteFragment()
+		val  writeFragment = WriteFragment()
 
 		val args = Bundle()
 		args.putString(NAME_FILE, title)
-		writeFragment!!.arguments = args
-		mPresenter.setWriteFragment(writeFragment!!)
+		writeFragment.arguments = args
+		mPresenter.setWriteFragment(writeFragment)
 
-		fragmentTransaction.replace(R.id.frame, writeFragment!!)
-		fragmentTransaction.addToBackStack(writeFragment!!.tag)
+		fragmentTransaction.replace(R.id.frame, writeFragment)
+		fragmentTransaction.addToBackStack(writeFragment.tag)
 		fragmentTransaction.commit()
 	}
 

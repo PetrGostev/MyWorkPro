@@ -3,13 +3,12 @@ package com.gostev.myworkpro.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.gostev.myworkpro.R
 import com.gostev.myworkpro.models.WriteModel
 import ru.rambler.libs.swipe_layout.SwipeLayout
 import ru.rambler.libs.swipe_layout.SwipeLayout.OnSwipeListener
+import kotlinx.android.synthetic.main.write_card.view.*
 
 class WritesAdapter(var items: ArrayList<WriteModel>, var onViewClickListener: OnViewClickListener) : RecyclerView.Adapter<WritesAdapter.ViewHolder>() {
 
@@ -30,13 +29,14 @@ class WritesAdapter(var items: ArrayList<WriteModel>, var onViewClickListener: O
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        var writeModel = items[position]
+        val writeModel = items[position]
 
-        holder.cardView?.setOnClickListener {
+        holder.itemView.card_view.setOnClickListener {
             onViewClickListener.onClickWrite(holder.itemView, writeModel)
         }
 
-        holder.swipeLayout!!.setOnSwipeListener(object : OnSwipeListener {
+
+        holder.itemView.product_swipe_root.setOnSwipeListener(object : OnSwipeListener {
             override fun onBeginSwipe(swipeLayout: SwipeLayout, moveToRight: Boolean) {
             }
 
@@ -51,18 +51,8 @@ class WritesAdapter(var items: ArrayList<WriteModel>, var onViewClickListener: O
             }
         })
 
-        holder.titleTv?.text = writeModel.getTitle()
+        holder.itemView.title_card.text = writeModel.getTitle()
     }
 
-    class ViewHolder(row: View) : RecyclerView.ViewHolder(row) {
-        var swipeLayout:SwipeLayout? = null
-        var cardView: CardView? = null
-        var titleTv: TextView? = null
-
-        init {
-            this.swipeLayout = row.findViewById(R.id.product_swipe_root)
-            this.cardView = row.findViewById(R.id.card_view)
-            this.titleTv = row.findViewById(R.id.title)
-        }
-    }
+    class ViewHolder(row: View) : RecyclerView.ViewHolder(row)
 }

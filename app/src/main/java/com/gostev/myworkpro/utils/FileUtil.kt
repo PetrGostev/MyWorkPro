@@ -110,7 +110,6 @@ class FileUtil {
 				}
 			}
 		}
-
 	}
 
 	fun getFile(): File {

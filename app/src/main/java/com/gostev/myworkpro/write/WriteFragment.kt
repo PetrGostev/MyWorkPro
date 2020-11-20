@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -20,22 +19,19 @@ import com.gostev.myworkpro.web.WebActivity
 import com.gostev.myworkpro.writes.WritesActivity
 import com.gostev.myworkpro.writes.WritesPresenter
 import com.jakewharton.rxbinding.widget.RxTextView
+import kotlinx.android.synthetic.main.activity_main.*
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.Subscriptions
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlinx.android.synthetic.main.fragment_write.*
 
-open class WriteFragment : Fragment() {
+open class WriteFragment : Fragment(R.layout.fragment_write) {
 	companion object {
 		private const val NAME_FILE = "NAME_FILE"
 	}
-
-	lateinit var mTitle: EditText
-	lateinit var mWrite: EditText
-	lateinit var mDateWrite: TextView
-	private lateinit var mFab: FloatingActionButton
 
 	private var editItem: MenuItem? = null
 	private var saveItem: MenuItem? = null
@@ -59,23 +55,16 @@ open class WriteFragment : Fragment() {
 		setHasOptionsMenu(true)
 	}
 
-	override fun onCreateView(inflater: LayoutInflater,
-		container: ViewGroup?,
-		savedInstanceState: Bundle?): View? {
-		val view = inflater.inflate(R.layout.fragment_write, container, false)
-		writesActivity = activity as WritesActivity
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
 
-		mTitle = view.findViewById(R.id.title)
-		mWrite = view.findViewById(R.id.write)
-		mDateWrite = view.findViewById(R.id.date_write)
-		mFab = writesActivity.findViewById(R.id.fab)
+		writesActivity = activity as WritesActivity
 
 		dialogUtil = writesActivity.getDialogUtil()
 		fileUtil = writesActivity.getFileUtil()
 		writesPresenter = writesActivity.getPresenter()
 
 		setupViews()
-		return view
 	}
 
 	override fun onResume() {
@@ -83,8 +72,8 @@ open class WriteFragment : Fragment() {
 		textWriteSub = Subscriptions.unsubscribed()
 
 		val text: String
-		if (mWrite.text.isNotEmpty()) {
-			text = mWrite.text.toString()
+		if (write.text.isNotEmpty()) {
+			text = write.text.toString()
 		} else {
 			text = " "
 		}
@@ -98,8 +87,8 @@ open class WriteFragment : Fragment() {
 
 	private fun setIsForEdit(isEdit: Boolean) {
 		mIsForEdit = isEdit
-		mTitle.isEnabled = isEdit
-		mWrite.isEnabled = isEdit
+		title.isEnabled = isEdit
+		write.isEnabled = isEdit
 		editItem?.isVisible = !isEdit
 		sendItem?.isVisible = !isEdit
 		searchItem?.isVisible = isEdit
@@ -108,7 +97,7 @@ open class WriteFragment : Fragment() {
 	}
 
 	private fun setupViews() {
-		mFab.visibility = View.GONE
+		writesActivity.fab.visibility = View.GONE
 
 		if (editItem != null) {
 			mIsForEdit =
@@ -118,28 +107,28 @@ open class WriteFragment : Fragment() {
 		fileUtil.readFile(mNameFile, object : FileUtilCallback {
 			override fun done(ok: Boolean) {
 				if (ok) {
-					mTitle.setText(fileUtil.getTitleWrite())
-					mWrite.setText(fileUtil.getTextWrite())
-					mDateWrite.setText(fileUtil.getDateWrite())
+					title.setText(fileUtil.getTitleWrite())
+					write.setText(fileUtil.getTextWrite())
+					date_write.setText(fileUtil.getDateWrite())
 				}
 			}
 		})
 	}
 
 	private fun subscribeEditTextNoPrint() {
-		textWriteSub = RxTextView.textChanges(mWrite).debounce(3, TimeUnit.SECONDS)
+		textWriteSub = RxTextView.textChanges(write).debounce(3, TimeUnit.SECONDS)
 			.subscribeOn(AndroidSchedulers.mainThread()).observeOn(AndroidSchedulers.mainThread())
 			.subscribe {
-				mWrite.append("\n");
+				write.append("\n");
 				textWriteSub.unsubscribe()
-				subscribeEditTextPrint(mWrite.text.toString())
+				subscribeEditTextPrint(write.text.toString())
 			}
 	}
 
 	private fun subscribeEditTextPrint(text: String) {
 
 		if (textWriteSub.isUnsubscribed) {
-			textWriteSub = RxTextView.beforeTextChangeEvents(mWrite).skip(1)
+			textWriteSub = RxTextView.beforeTextChangeEvents(write).skip(1)
 				.observeOn(AndroidSchedulers.mainThread()).map { it.text() }.map { it.toString() }
 				.subscribe {
 					if (saveItem?.isVisible == false) {
@@ -154,7 +143,7 @@ open class WriteFragment : Fragment() {
 					}
 				}
 		}
-		RxTextView.beforeTextChangeEvents(mTitle).skip(1).observeOn(AndroidSchedulers.mainThread())
+		RxTextView.beforeTextChangeEvents(title).skip(1).observeOn(AndroidSchedulers.mainThread())
 			.map { it.text() }.map { it.toString() }.subscribe {
 					saveItem?.isVisible = true
 					writesPresenter.setVisibleSaveItem(true)
@@ -177,7 +166,7 @@ open class WriteFragment : Fragment() {
 		val id = item.itemId
 		if (id == R.id.save_fragment) {
 			hideKeyboard()
-			if (mTitle.text.isEmpty()) {
+			if (title.text.isEmpty()) {
 				dialogUtil.showInfoDialog(activity, getString(R.string.title_required))
 			} else {
 				val simpleDateFormat =
@@ -185,11 +174,11 @@ open class WriteFragment : Fragment() {
 				val date: String = simpleDateFormat.format(Date())
 
 				if (writesPresenter.getModeType() == ModeType.EDIT) {
-					if (mDateWrite.text.isEmpty()) {
-						mDateWrite.text = getString(R.string.date_write, date)
+					if (date_write.text.isEmpty()) {
+						date_write.text = getString(R.string.date_write, date)
 					}
 
-					if (mTitle.text.split(" ") != fileUtil.getTitleWrite().split(" ")) {
+					if (title.text.split(" ") != fileUtil.getTitleWrite().split(" ")) {
 						dialogUtil.showEditFileDialog(writesActivity,
 							object : DialogUtil.EditCallback {
 								override fun done(ok: Boolean) {
@@ -205,7 +194,7 @@ open class WriteFragment : Fragment() {
 					}
 
 				} else {
-					mDateWrite.text = getString(R.string.date_write, date)
+					date_write.text = getString(R.string.date_write, date)
 					showEditDialog()
 				}
 			}
@@ -221,7 +210,7 @@ open class WriteFragment : Fragment() {
 			val sendIntent: Intent = Intent(Intent.ACTION_SEND);
 			sendIntent.type = "text/plain";
 			sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(fileUtil.getFile()))
-			writesActivity.startActivity(Intent.createChooser(sendIntent, mTitle.text))
+			writesActivity.startActivity(Intent.createChooser(sendIntent, title.text))
 		}
 		if (id == R.id.search_fragment) {
 			val intent = Intent(writesActivity, WebActivity::class.java)
@@ -244,9 +233,9 @@ open class WriteFragment : Fragment() {
 	}
 
 	private fun writeFile() {
-		fileUtil.writeFile(mTitle.text.toString(),
-			mWrite.text.toString(),
-			mDateWrite.text.toString(),
+		fileUtil.writeFile(title.text.toString(),
+			write.text.toString(),
+			date_write.text.toString(),
 			writesActivity)
 
 		setIsForEdit(false)
@@ -264,6 +253,6 @@ open class WriteFragment : Fragment() {
 		writesActivity.supportFragmentManager.popBackStack()
 		hideKeyboard()
 		writesPresenter.obtainData()
-		mFab.visibility = View.VISIBLE
+		writesActivity.fab.visibility = View.VISIBLE
 	}
 }

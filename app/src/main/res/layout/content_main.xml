@@ -19,11 +19,11 @@
         android:text="@string/welcome_text"
         android:textColor="@color/colorTextPrimary"
         android:textSize="18sp"
-        app:layout_constraintTop_toTopOf="@+id/recycler"
+        app:layout_constraintTop_toTopOf="@+id/writes_recycler"
         tools:ignore="MissingConstraints" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
+        android:id="@+id/writes_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
